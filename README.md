@@ -21,9 +21,9 @@ import wthell
 If there's an uncaught exception, you will enter an interactive shell like this:
 
 ```python
-. def g(a, b):
-.     a += h(a)
-.     b += 3
+  def g(a, b):
+      a += h(a)
+      b += 3
 >     raise Exception("lol")
 
 
