@@ -14,15 +14,8 @@ class WTHell:
         self.currentframe = None
         self.exception_frame = None
         self.exception = {}
+        self._sys_excepthook = None
         self.console = Console()
-
-    def tracefunc(self, frame, event, arg):
-        if event == 'call':
-            if frame.f_code.co_name == "excepthook":
-                sys.settrace(None)
-            else:
-                self.exception_frame = frame
-        return None
 
     def frame_depth(self, frame):
         f = frame
@@ -44,14 +37,16 @@ class WTHell:
         self.exception["type"] = type
         self.exception["value"] = value
         self.exception["tb"] = tb
-        self.locate_exception_frame(tb)
+        inner_tb = self.exception["tb"]
+        while inner_tb.tb_next:
+            inner_tb = inner_tb.tb_next
+        self.exception_frame = inner_tb.tb_frame
         self.prepare_data()
         self.dbg_console()
 
     def __call__(self):
-        sys.settrace(None)
-        sys.excepthook = None
-        self.exception_frame = self.exception_frame.f_back
+        sys.excepthook = self._sys_excepthook
+        self.exception_frame = sys._getframe().f_back
         self.prepare_data()
         self.dbg_console()
 
@@ -74,17 +69,16 @@ class WTHell:
 
         args = cmd.split()
 
-        if args[0] == "back":
+        if args[0] == "back" or args[0] == "b":
             self.do_back(args[1:])
-        elif args[0] == "in":
+        elif args[0] == "in" or args[0] == "i":
             self.do_in(args[1:])
-        elif args[0] == "clear":
+        elif args[0] == "clear" or args[0] == "cl":
             self.do_clear(args[1:])
-        elif args[0] == "reset":
+        elif args[0] == "reset" or args[0] == "r":
             self.do_reset(args[1:])
-        elif args[0] == "continue":
+        elif args[0] == "continue" or args[0] == "c":
             sys.excepthook = self.excepthook
-            sys.settrace(self.tracefunc)
             return False
         else:
             self.do_eval(cmd)
@@ -139,7 +133,7 @@ class WTHell:
 
     def print_help(self):
         console = self.console
-        console.print("back     -- go to outer frame  | in     -- go to inner frame")
-        console.print("clear    -- clear the console  | reset  -- back to trigger frame")
-        console.print("continue -- resume the program | ctrl+D -- quit")
+        console.print("back(b)     -- go to outer frame  | in(i)    -- go to inner frame")
+        console.print("clear(cl)   -- clear the console  | reset(r) -- back to trigger frame")
+        console.print("continue(c) -- resume the program | ctrl+D   -- quit")
         console.print()
