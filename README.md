@@ -29,9 +29,9 @@ If there's an uncaught exception, you will enter an interactive shell like this:
 
 Exception raised: <class 'Exception'> lol
 
-back     -- go to outer frame  | in     -- go to inner frame
-clear    -- clear the console  | reset  -- back to trigger frame
-continue -- resume the program | ctrl+D -- quit
+back(b)     -- go to outer frame  | in(i)    -- go to inner frame
+clear(cl)   -- clear the console  | reset(r) -- back to trigger frame
+continue(c) -- resume the program | ctrl+D   -- quit
 
 >>> 
 ```

@@ -2,7 +2,7 @@ import sys
 from .wthell import WTHell
 
 
-__version__ = "0.0.3"
+__version__ = "0.1.0"
 
 if "wth" not in locals():
     wth = WTHell()
