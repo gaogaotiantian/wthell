@@ -27,7 +27,7 @@ setuptools.setup(
     package_dir={"":"src"},
     classifiers=[
         "Development Status :: 4 - Alpha",
-        "Programming Language :: Python :: 3"
+        "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent"
     ],
