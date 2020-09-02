@@ -25,6 +25,9 @@ setuptools.setup(
     url="https://github.com/gaogaotiantian/wthell",
     packages=setuptools.find_packages("src"),
     package_dir={"":"src"},
+    install_requires=[
+        "rich"
+    ],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",

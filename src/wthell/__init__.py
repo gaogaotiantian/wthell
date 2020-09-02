@@ -7,4 +7,4 @@ if "wth" not in locals():
     sys.excepthook = wth.excepthook
     sys.settrace(wth.tracefunc)
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"

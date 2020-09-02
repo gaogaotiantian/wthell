@@ -20,14 +20,14 @@ import wthell
 
 If there's an uncaught exception, you will enter an interactive shell like this:
 
-```
+```python
 . def g(a, b):
 .     a += h(a)
 .     b += 3
 >     raise Exception("lol")
 
 
-<class 'Exception'> lol
+Exception raised: <class 'Exception'> lol
 
 back  -- go to outer frame | in     -- go to inner frame
 clear -- reset the console | ctrl+D -- quit
@@ -41,7 +41,7 @@ frame.
 
 While you are in a stack, you can type anything that you want to evaluation to help you debug.
 
-```
+```python
 >>> a
 13
 >>> a + 1

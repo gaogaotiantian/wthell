@@ -44,5 +44,5 @@ class Instrument:
                 if idx == frame.f_lineno - 1:
                     lst[idx] = "> " + lst[idx]
                 else:
-                    lst[idx] = ". " + lst[idx]
+                    lst[idx] = "  " + lst[idx]
         self.code_string = "".join(lst[start:end])

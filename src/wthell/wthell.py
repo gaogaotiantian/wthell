@@ -3,6 +3,8 @@ import sys
 from .instrument import Instrument
 import os
 import readline
+from rich.console import Console
+from rich.syntax import Syntax
 
 
 class WTHell:
@@ -12,6 +14,7 @@ class WTHell:
         self.currentframe = None
         self.exception_frame = None
         self.exception = {}
+        self.console = Console()
 
     def tracefunc(self, frame, event, arg):
         if event == 'call':
@@ -75,7 +78,7 @@ class WTHell:
 
     def do_back(self, args):
         if self.frame_idx == len(self.frames) - 1:
-            print("Already at root, can't go back anymore")
+            self.console.print("Already at root, can't go back anymore")
         else:
             self.frame_idx += 1
             self.currentframe = self.frames[self.frame_idx]
@@ -83,7 +86,7 @@ class WTHell:
 
     def do_in(self, args):
         if self.frame_idx == 0:
-            print("Already at stack top, can't go in anymore")
+            self.console.print("Already at stack top, can't go in anymore")
         else:
             self.frame_idx -= 1
             self.currentframe = self.frames[self.frame_idx]
@@ -94,7 +97,7 @@ class WTHell:
 
     def do_eval(self, s):
         success, ret = self.currentframe.get_eval(s)
-        print(ret)
+        self.console.print(ret)
 
     def dbg_console(self):
         self.show_console()
@@ -103,13 +106,17 @@ class WTHell:
             self.do_cmd(cmd)
 
     def show_console(self):
+        console = self.console
         os.system("cls" if os.name == "nt" else "clear")
-        print(self.currentframe.code_string)
-        print(self.exception["type"], self.exception["value"])
-        print()
+        syntax = Syntax(self.currentframe.code_string, "python", theme = "monokai")
+        console.print(syntax)
+        console.print()
+        console.print("Exception raised: ", self.exception["type"], self.exception["value"])
+        console.print()
         self.print_help()
 
     def print_help(self):
-        print("back  -- go to outer frame | in     -- go to inner frame")
-        print("clear -- reset the console | ctrl+D -- quit")
-        print()
+        console = self.console
+        console.print("back  -- go to outer frame | in     -- go to inner frame")
+        console.print("clear -- reset the console | ctrl+D -- quit")
+        console.print()
