@@ -48,6 +48,13 @@ class WTHell:
         self.prepare_data()
         self.dbg_console()
 
+    def __call__(self):
+        sys.settrace(None)
+        sys.excepthook = None
+        self.exception_frame = self.exception_frame.f_back
+        self.prepare_data()
+        self.dbg_console()
+
     def prepare_data(self):
         self.currentframe = self.exception_frame
         self.frames = []
@@ -73,8 +80,16 @@ class WTHell:
             self.do_in(args[1:])
         elif args[0] == "clear":
             self.do_clear(args[1:])
+        elif args[0] == "reset":
+            self.do_reset(args[1:])
+        elif args[0] == "continue":
+            sys.excepthook = self.excepthook
+            sys.settrace(self.tracefunc)
+            return False
         else:
             self.do_eval(cmd)
+        
+        return True
 
     def do_back(self, args):
         if self.frame_idx == len(self.frames) - 1:
@@ -95,6 +110,11 @@ class WTHell:
     def do_clear(self, args):
         self.show_console()
 
+    def do_reset(self, args):
+        self.frame_idx = 0
+        self.currentframe = self.frames[self.frame_idx]
+        self.show_console()
+
     def do_eval(self, s):
         success, ret = self.currentframe.get_eval(s)
         self.console.print(ret)
@@ -103,7 +123,8 @@ class WTHell:
         self.show_console()
         while True:
             cmd = input(">>> ")
-            self.do_cmd(cmd)
+            if not self.do_cmd(cmd):
+                break
 
     def show_console(self):
         console = self.console
@@ -111,12 +132,14 @@ class WTHell:
         syntax = Syntax(self.currentframe.code_string, "python", theme = "monokai")
         console.print(syntax)
         console.print()
-        console.print("Exception raised: ", self.exception["type"], self.exception["value"])
+        if self.exception:
+            console.print("Exception raised: ", self.exception["type"], self.exception["value"])
         console.print()
         self.print_help()
 
     def print_help(self):
         console = self.console
-        console.print("back  -- go to outer frame | in     -- go to inner frame")
-        console.print("clear -- reset the console | ctrl+D -- quit")
+        console.print("back     -- go to outer frame  | in     -- go to inner frame")
+        console.print("clear    -- clear the console  | reset  -- back to trigger frame")
+        console.print("continue -- resume the program | ctrl+D -- quit")
         console.print()
