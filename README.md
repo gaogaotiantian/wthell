@@ -53,7 +53,7 @@ While you are in a stack, you can type anything that you want to evaluation to h
 
 wthell behaves like an interactive shell. 
 
-Happe debugging!
+Happy debugging!
 
 ## License
 
