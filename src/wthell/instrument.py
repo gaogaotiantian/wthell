@@ -19,8 +19,12 @@ class Instrument:
         filename = frame.f_code.co_filename
         firstlineno = frame.f_code.co_firstlineno
 
-        with open(filename, "r") as f:
-            lst = f.readlines()
+        try:
+            with open(filename, "r") as f:
+                lst = f.readlines()
+        except NotADirectoryError:
+            self.code_string = "Source file not available"
+            return
 
         indent = -1
         start = firstlineno
@@ -36,7 +40,8 @@ class Instrument:
         while end < len(lst):
             line = lst[end]
             stripped_line = line.lstrip()
-            if len(line) - len(stripped_line) <= indent:
+            if len(line) - len(stripped_line) <= indent and \
+                    not stripped_line.startswith("#"):
                 break
             end += 1
         for idx in range(start, end):

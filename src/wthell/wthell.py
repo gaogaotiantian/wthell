@@ -69,10 +69,10 @@ class WTHell:
 
         args = cmd.split()
 
-        if args[0] == "back" or args[0] == "b":
-            self.do_back(args[1:])
-        elif args[0] == "in" or args[0] == "i":
-            self.do_in(args[1:])
+        if args[0] == "up" or args[0] == "u":
+            self.do_up(args[1:])
+        elif args[0] == "down" or args[0] == "d":
+            self.do_down(args[1:])
         elif args[0] == "clear" or args[0] == "cl":
             self.do_clear(args[1:])
         elif args[0] == "reset" or args[0] == "r":
@@ -85,17 +85,17 @@ class WTHell:
         
         return True
 
-    def do_back(self, args):
+    def do_up(self, args):
         if self.frame_idx == len(self.frames) - 1:
-            self.console.print("Already at root, can't go back anymore")
+            self.console.print("Already at root, can't go up anymore")
         else:
             self.frame_idx += 1
             self.currentframe = self.frames[self.frame_idx]
             self.show_console()
 
-    def do_in(self, args):
+    def do_down(self, args):
         if self.frame_idx == 0:
-            self.console.print("Already at stack top, can't go in anymore")
+            self.console.print("Already at stack top, can't go down anymore")
         else:
             self.frame_idx -= 1
             self.currentframe = self.frames[self.frame_idx]
@@ -116,9 +116,12 @@ class WTHell:
     def dbg_console(self):
         self.show_console()
         while True:
-            cmd = input(">>> ")
-            if not self.do_cmd(cmd):
-                break
+            try:
+                cmd = input(">>> ")
+                if not self.do_cmd(cmd):
+                    break
+            except EOFError:
+                exit(0)
 
     def show_console(self):
         console = self.console
@@ -133,7 +136,7 @@ class WTHell:
 
     def print_help(self):
         console = self.console
-        console.print("back(b)     -- go to outer frame  | in(i)    -- go to inner frame")
+        console.print("up(u)       -- go to outer frame  | down(d)  -- go to inner frame")
         console.print("clear(cl)   -- clear the console  | reset(r) -- back to trigger frame")
         console.print("continue(c) -- resume the program | ctrl+D   -- quit")
         console.print()

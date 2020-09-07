@@ -12,7 +12,13 @@ pip install wthell
 
 ## Usage
 
-It's super easy to use wthell. Just import it and it's done!
+It's super easy to use wthell. Just run you script using wthell instead of python
+
+```
+wthell your_script.py args1 args2
+```
+
+Or you can import wthell in your script and run your script normally
 
 ```python
 import wthell
@@ -29,7 +35,7 @@ If there's an uncaught exception, you will enter an interactive shell like this:
 
 Exception raised: <class 'Exception'> lol
 
-back(b)     -- go to outer frame  | in(i)    -- go to inner frame
+up(u)       -- go to outer frame  | down(d)  -- go to inner frame
 clear(cl)   -- clear the console  | reset(r) -- back to trigger frame
 continue(c) -- resume the program | ctrl+D   -- quit
 
@@ -38,8 +44,8 @@ continue(c) -- resume the program | ctrl+D   -- quit
 
 You will be in the frame(function) that raised exceptions in the beginning. 
 
-* Type ```back``` to go to outer frame(its caller). 
-* Type ```in``` to go to inner frame(when you already go out). 
+* Type ```up``` to go to outer frame(its caller). 
+* Type ```down``` to go to inner frame(when you already go out). 
 * Type ```clear``` to clear the console prints
 * Type ```reset``` to go back to the original frame that triggered wthell
 * Type ```continue``` to resume the program
