@@ -3,7 +3,7 @@ from .wthell import WTHell
 from .main import main
 
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 if "wth" not in locals():
     wth = WTHell()
