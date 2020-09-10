@@ -18,6 +18,14 @@ It's super easy to use wthell. Just run you script using wthell instead of pytho
 wthell your_script.py args1 args2
 ```
 
+In linux shell, you can simply use this right after you command failed:
+
+```
+wthell !!
+```
+
+Fun, isn't it?
+
 Or you can import wthell in your script and run your script normally
 
 ```python
@@ -38,6 +46,7 @@ Exception raised: <class 'Exception'> lol
 up(u)       -- go to outer frame  | down(d)  -- go to inner frame
 clear(cl)   -- clear the console  | reset(r) -- back to trigger frame
 continue(c) -- resume the program | ctrl+D   -- quit
+show(s) <func> -- show source code of function <func>
 
 >>> 
 ```
@@ -49,6 +58,7 @@ You will be in the frame(function) that raised exceptions in the beginning.
 * Type ```clear``` to clear the console prints
 * Type ```reset``` to go back to the original frame that triggered wthell
 * Type ```continue``` to resume the program
+* Type ```show <func_name>``` to show source code of a function
 
 wthell will record the full call stack so you can check any frame. 
 
