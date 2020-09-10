@@ -134,6 +134,7 @@ class WTHell:
     def show_console(self):
         console = self.console
         os.system("cls" if os.name == "nt" else "clear")
+        self.console.print(self.currentframe.get_file_path())
         self.print(self.currentframe.code_string)
         console.print()
         if self.exception:

@@ -1,3 +1,5 @@
+import os
+
 class Instrument:
     def __init__(self, frame=None, p=print):
         if frame:
@@ -82,3 +84,9 @@ class Instrument:
 
         self.print("".join(code_list))
         self.print("")
+
+    def get_file_path(self):
+        frame = self._frame
+        filename = frame.f_code.co_filename
+        firstlineno = frame.f_code.co_firstlineno
+        return "{}({})".format(os.path.abspath(filename), firstlineno)

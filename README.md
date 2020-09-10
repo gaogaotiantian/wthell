@@ -35,6 +35,7 @@ import wthell
 If there's an uncaught exception, you will enter an interactive shell like this:
 
 ```python
+/home/gaogaotiantian/programs/wthell/test.py(6)
   def g(a, b):
       a += h(a)
       b += 3
