@@ -1,8 +1,9 @@
 class Instrument:
-    def __init__(self, frame=None):
+    def __init__(self, frame=None, p=print):
         if frame:
             self._frame = frame
             self.do_instrument(frame)
+            self.print = p
 
     def get_eval(self, s):
         f = self._frame
@@ -15,16 +16,12 @@ class Instrument:
     def do_instrument(self, frame):
         self.add_code_string(frame)
 
-    def add_code_string(self, frame):
-        filename = frame.f_code.co_filename
-        firstlineno = frame.f_code.co_firstlineno
-
+    def get_func_code_list(self, filename, firstlineno):
         try:
             with open(filename, "r") as f:
                 lst = f.readlines()
         except NotADirectoryError:
-            self.code_string = "Source file not available"
-            return
+            return None, None
 
         indent = -1
         start = firstlineno
@@ -44,10 +41,44 @@ class Instrument:
                     not stripped_line.startswith("#"):
                 break
             end += 1
-        for idx in range(start, end):
-            if len(lst[idx].strip()) > 0:
-                if idx == frame.f_lineno - 1:
-                    lst[idx] = "> " + lst[idx]
+
+        return lst[start:end], start
+
+    def add_code_string(self, frame):
+        filename = frame.f_code.co_filename
+        firstlineno = frame.f_code.co_firstlineno
+
+        code_list, start = self.get_func_code_list(filename, firstlineno)
+        if not code_list:
+            self.code_string = "Source file not available"
+            return
+
+        for idx in range(0, len(code_list)):
+            if len(code_list[idx].strip()) > 0:
+                if idx == frame.f_lineno - start - 1:
+                    code_list[idx] = "> " + code_list[idx]
                 else:
-                    lst[idx] = "  " + lst[idx]
-        self.code_string = "".join(lst[start:end])
+                    code_list[idx] = "  " + code_list[idx]
+        self.code_string = "".join(code_list)
+
+    def show_function(self, func_name):
+        frame = self._frame
+        if func_name in frame.f_locals:
+            func = frame.f_locals[func_name]
+        elif func_name in frame.f_globals:
+            func = frame.f_globals[func_name]
+        else:
+            self.print("Function {} does not exist".format(func_name))
+            return
+
+        if not hasattr(func, "__code__"):
+            self.print("Function {} does not exist".format(func_name))
+
+        code = func.__code__
+        filename = code.co_filename
+        firstlino = code.co_firstlineno
+
+        code_list, _ = self.get_func_code_list(filename, firstlino)
+
+        self.print("".join(code_list))
+        self.print("")

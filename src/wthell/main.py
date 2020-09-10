@@ -4,13 +4,18 @@ import argparse
 import subprocess
 import runpy
 from .wthell import WTHell
+import re
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("command", nargs=argparse.REMAINDER)
     parser.add_argument("--module", "-m", nargs="?", default=None)
-    options = parser.parse_args(sys.argv[1:])
+
+    if re.match(r"^python(3(\.[0-9]*)?)?$", sys.argv[1]):
+        options = parser.parse_args(sys.argv[2:])
+    else:
+        options = parser.parse_args(sys.argv[1:])
 
     if options.command:
         command = options.command

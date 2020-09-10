@@ -54,7 +54,7 @@ class WTHell:
         self.currentframe = self.exception_frame
         self.frames = []
         while True:
-            self.frames.append(Instrument(self.currentframe))
+            self.frames.append(Instrument(self.currentframe, self.print))
             if self.currentframe.f_back:
                 self.currentframe = self.currentframe.f_back
             else:
@@ -65,7 +65,7 @@ class WTHell:
     def do_cmd(self, cmd):
         cmd = cmd.strip()
         if not cmd:
-            return
+            return True
 
         args = cmd.split()
 
@@ -77,6 +77,8 @@ class WTHell:
             self.do_clear(args[1:])
         elif args[0] == "reset" or args[0] == "r":
             self.do_reset(args[1:])
+        elif args[0] == "show" or args[0] == "s":
+            self.do_show(args[1:])
         elif args[0] == "continue" or args[0] == "c":
             sys.excepthook = self.excepthook
             return False
@@ -109,8 +111,14 @@ class WTHell:
         self.currentframe = self.frames[self.frame_idx]
         self.show_console()
 
+    def do_show(self, args):
+        if len(args) == 1:
+            self.currentframe.show_function(args[0])
+        else:
+            self.console.print("You need to specify a function")
+
     def do_eval(self, s):
-        success, ret = self.currentframe.get_eval(s)
+        _, ret = self.currentframe.get_eval(s)
         self.console.print(ret)
 
     def dbg_console(self):
@@ -126,17 +134,22 @@ class WTHell:
     def show_console(self):
         console = self.console
         os.system("cls" if os.name == "nt" else "clear")
-        syntax = Syntax(self.currentframe.code_string, "python", theme = "monokai")
-        console.print(syntax)
+        self.print(self.currentframe.code_string)
         console.print()
         if self.exception:
             console.print("Exception raised: ", self.exception["type"], self.exception["value"])
         console.print()
         self.print_help()
 
+    def print(self, s):
+        console = self.console
+        syntax = Syntax(s, "python", theme = "monokai")
+        console.print(syntax)
+
     def print_help(self):
         console = self.console
         console.print("up(u)       -- go to outer frame  | down(d)  -- go to inner frame")
         console.print("clear(cl)   -- clear the console  | reset(r) -- back to trigger frame")
         console.print("continue(c) -- resume the program | ctrl+D   -- quit")
+        console.print("show(s) <func> -- show source code of function <func>")
         console.print()
