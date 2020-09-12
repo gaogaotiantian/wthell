@@ -40,7 +40,8 @@ class Instrument:
             line = lst[end]
             stripped_line = line.lstrip()
             if len(line) - len(stripped_line) <= indent and \
-                    not stripped_line.startswith("#"):
+                    not stripped_line.startswith("#") and \
+                    len(stripped_line) > 0:
                 break
             end += 1
 
