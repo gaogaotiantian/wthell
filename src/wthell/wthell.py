@@ -2,7 +2,10 @@ import traceback
 import sys
 from .instrument import Instrument
 import os
-import readline
+try:
+    import readline
+except ModuleNotFoundError:
+    pass
 from rich.console import Console
 from rich.syntax import Syntax
 
